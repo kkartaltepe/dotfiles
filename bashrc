@@ -1,7 +1,3 @@
-# Add vim as default editor
-export EDITOR=vim
-export TERMINAL=urxvt
-export BROWSER=chromium
 # Gtk themes 
 export GTK2_RC_FILES="$HOME/.gtkrc-2.0"
 
@@ -15,5 +11,3 @@ export PATH="$PYENV_ROOT/bin:$PATH"
 #[[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && exec startx
 eval "$(pyenv init -)"
 
-#set terminal colors isomg xrdb
-[[ -f ~/.xresources ]] && xrdb -merge ~/.xresources
