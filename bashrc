@@ -1,6 +1,6 @@
 # Add vim as default editor
 export EDITOR=vim
-export TERMINAL=lxterminal
+export TERMINAL=urxvt
 export BROWSER=chromium
 # Gtk themes 
 export GTK2_RC_FILES="$HOME/.gtkrc-2.0"
