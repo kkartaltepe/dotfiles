@@ -10,6 +10,7 @@ local beautiful = require("beautiful")
 -- Notification library
 local naughty = require("naughty")
 local menubar = require("menubar")
+xdg_menu = require("archmenu")
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -62,44 +63,63 @@ local layouts =
     awful.layout.suit.tile.bottom,
     awful.layout.suit.tile.top,
     awful.layout.suit.fair,
-    awful.layout.suit.fair.horizontal,
-    awful.layout.suit.spiral,
-    awful.layout.suit.spiral.dwindle,
-    awful.layout.suit.max,
-    awful.layout.suit.max.fullscreen,
-    awful.layout.suit.magnifier
+    awful.layout.suit.fair.horizontal
+    --awful.layout.suit.spiral,
+    --awful.layout.suit.spiral.dwindle,
+    --awful.layout.suit.max,
+    --awful.layout.suit.max.fullscreen,
+    --awful.layout.suit.magnifier
 }
 -- }}}
 
 -- {{{ Wallpaper
-if beautiful.wallpaper then
-    for s = 1, screen.count() do
-        gears.wallpaper.maximized(beautiful.wallpaper, s, true)
-    end
-end
+--if beautiful.wallpaper then
+    --for s = 1, screen.count() do
+        --gears.wallpaper.maximized(beautiful.wallpaper, s, true)
+    --end
+--end
 -- }}}
 
 -- {{{ Tags
 -- Define a tag table which hold all screen tags.
-tags = {}
+tags = {
+    names = {"main", "misc", "chat", 4, 5, 6, 7, 8, 9},
+    layouts = {
+        layouts[1], layouts[0], layouts[0], layouts[1], layouts[1],
+        layouts[1], layouts[1], layouts[1], layouts[1]
+    }
+}
 for s = 1, screen.count() do
     -- Each screen has its own tag table.
-    tags[s] = awful.tag({ 1, 2, 3, 4, 5, 6, 7, 8, 9 }, s, layouts[1])
+    tags[s] = awful.tag(tags.names, s, tags.layouts)
 end
 -- }}}
 
 -- {{{ Menu
 -- Create a laucher widget and a main menu
-myawesomemenu = {
+awesomeMenu = {
    { "manual", terminal .. " -e man awesome" },
-   { "edit config", editor_cmd .. " " .. awesome.conffile },
    { "restart", awesome.restart },
    { "quit", awesome.quit }
 }
 
-mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
+scrot_cmd = function(extraParams)
+    return function()
+        awful.util.spawn_with_shell("sleep 0.5; scrot ~/screenshots/%Y%m%d%s_scrot_$wx$h.png" .. extraParams)
+    end
+end
+
+screenshotMenu = {
+    { "take screenshot", scrot_cmd(" -e 'xdg-open $f'") },
+    { "capture area", scrot_cmd(" -s -e 'feh $f'") },
+    { "Puush area", scrot_cmd(" -s -e '(puush $f; feh `xclip -o -selection c`) &'") }
+}
+
+mymainmenu = awful.menu({ items = { { "awesome", awesomeMenu, beautiful.awesome_icon },
                                     { "Web Browser", browser },
-                                    { "open terminal", terminal }
+                                    { "Terminal", terminal },
+                                    { "screenshot", screenshotMenu },
+                                    { "Applications", xdgmenu }
                                   }
                         })
 
@@ -361,16 +381,29 @@ awful.rules.rules = {
                      raise = true,
                      keys = clientkeys,
                      buttons = clientbuttons } },
-    { rule = { class = "MPlayer" },
-      properties = { floating = true } },
-    { rule = { class = "pinentry" },
-      properties = { floating = true } },
-    { rule = { class = "gimp" },
-      properties = { floating = true } },
+    {
+        rule = { class = "Steam" },
+        properties = {
+            floating = true,
+            tag = tags[2]["chat"]
+        }
+    },
+    {
+        rule = { class = "Skype" },
+        properties = {
+            floating = true,
+            tag = tags[2]["chat"]
+        }
+    }
     -- Set Firefox to always map on tags number 2 of screen 1.
     -- { rule = { class = "Firefox" },
     --   properties = { tag = tags[1][2] } },
 }
+-- }}}
+    -- Set Firefox to always map on tags number 2 of screen 1.
+    -- { rule = { class = "Firefox" },
+    --   properties = { tag = tags[1][2] } },
+
 -- }}}
 
 -- {{{ Signals

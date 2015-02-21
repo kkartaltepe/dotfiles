@@ -1,7 +1,10 @@
 URxvt.font: xft:Envy Code R:style=Regular:size=8, xft:PowerlineSymbols:size=8
 URxvt.boldFont: xft:Envy Code R:style=Regular:size=8
+
 URxvt.scrollBar: false
-URxvt.intenityStyles: false
+urxvt.perl-ext-common: default,matcher
+urxvt.url-launcher: /usr/bin/xdg-open
+urxvt.matcher.button: 1
 
 *background:#222222
 *foreground:#e8e9ca

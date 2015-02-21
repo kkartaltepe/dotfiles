@@ -1,5 +1,5 @@
 #!/bin/bash
-export DE=awesome
+export WM=awesome
 export EDITOR=vim
 export TERMINAL=urxvt
 export BROWSER=chromium
@@ -11,16 +11,19 @@ fi
 
 /usr/bin/xdg-user-dirs-update
 
-#set terminal colors isomg xrdb
+# set terminal colors isomg xrdb
 [[ -f ~/.xresources ]] && xrdb -merge ~/.xresources
 
-if [ $DE == openbox ]; then
+conky -d &
+~/.random_wallpaper.sh &
+
+if [ $WM == openbox ]; then
     # configure obmenu user
     sed -i 's/live/'$(whoami)'/' ~/.config/obmenu-generator/schema.pl \
                                  ~/.config/obmenu-generator/config.pl  
 
     /usr/bin/openbox-session > ~/.openbox_startup.log 2>&1
-elif [ $DE == awesome ]; then
+elif [ $WM == awesome ]; then
     awesome
 fi
 
