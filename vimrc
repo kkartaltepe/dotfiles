@@ -75,8 +75,10 @@ set encoding=utf-8
 set fileencodings=utf-8
 
 " Move backups and swaps to seperate folders
-set backupdir=~/.vim/backups
-set directory=~/.vim/temp
+silent !mkdir -p ~/.vim/backups
+silent !mkdir -p ~/.vim/swap
+set backupdir=~/.vim/backups//
+set directory=~/.vim/swap//
 
 " Modelines have historically been a source of security vulnerabilities. As
 " such, it may be a good idea to disable them and use the securemodelines
