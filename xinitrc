@@ -14,7 +14,10 @@ fi
 # set terminal colors isomg xrdb
 [[ -f ~/.xresources ]] && xrdb -merge ~/.xresources
 
-conky -d &
+# Start MPD
+[ ! -s ~/.config/mpd/pid ] && mpd
+
+compton -b --config ~/.compton.conf
 ~/.random_wallpaper.sh &
 
 if [ $WM == openbox ]; then

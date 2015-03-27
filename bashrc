@@ -8,6 +8,9 @@ export PS1='[\u@\h \w]\$ '
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
 
+# Add MPC sock to MPD_HOST
+export MPD_HOST="$HOME/.config/mpd/socket"
+
 #[[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && exec startx
 eval "$(pyenv init -)"
 
