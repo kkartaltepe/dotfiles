@@ -1,5 +1,5 @@
 #!/usr/bin/bash
-
+# convmv --notest -f shift-jis -t utf8 * Works!
 for file in *
 do
     shasum=`sha1sum "$file" | sed -e 's/ .*//g'`

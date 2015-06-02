@@ -24,6 +24,7 @@ filetype indent plugin on
 syntax on
 
 au BufNewFile,BufRead *.rs set filetype=rust
+au BufNewFile,BufRead *.tex set tw=100
 
 " Set the terminal to 256 colors to fix airline
 set t_Co=256

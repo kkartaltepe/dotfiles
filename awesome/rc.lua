@@ -384,15 +384,13 @@ awful.rules.rules = {
     {
         rule = { class = "Steam" },
         properties = {
-            floating = true,
-            tag = tags[2]["chat"]
+            floating = true
         }
     },
     {
         rule = { class = "Skype" },
         properties = {
-            floating = true,
-            tag = tags[2]["chat"]
+            floating = true
         }
     }
     -- Set Firefox to always map on tags number 2 of screen 1.

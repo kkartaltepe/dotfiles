@@ -15,7 +15,8 @@ fi
 [[ -f ~/.xresources ]] && xrdb -merge ~/.xresources
 
 # Start MPD
-[ ! -s ~/.config/mpd/pid ] && mpd
+# Use systemd unit for now.
+#[[ ! -s ~/.config/mpd/pid ]] && mpd
 
 compton -b --config ~/.compton.conf
 ~/.random_wallpaper.sh &
@@ -27,7 +28,7 @@ if [ $WM == openbox ]; then
 
     /usr/bin/openbox-session > ~/.openbox_startup.log 2>&1
 elif [ $WM == awesome ]; then
-    awesome
+    awesome --no-argb
 fi
 
 
