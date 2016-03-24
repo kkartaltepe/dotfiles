@@ -83,7 +83,7 @@ local layouts =
 -- {{{ Tags
 -- Define a tag table which hold all screen tags.
 tags = {
-    names = {"main", "misc", "chat", 4, 5, 6, 7, 8, 9},
+    names = {"一", "二", "三", "四", "五", "六", "七", "八", "九"},
     layouts = {
         layouts[2], layouts[1], layouts[1], layouts[1], layouts[1],
         layouts[1], layouts[1], layouts[1], layouts[1]
@@ -105,14 +105,21 @@ awesomeMenu = {
 
 scrot_cmd = function(extraParams)
     return function()
-        awful.util.spawn_with_shell("sleep 0.5; scrot ~/screenshots/%Y%m%d%s_scrot_$wx$h.png" .. extraParams)
+        awful.util.spawn_with_shell("sleep 1; scrot ~/screenshots/%Y%m%d%s_scrot_$wx$h.png" .. extraParams)
     end
 end
 
+uptopw_cmd = function()
+    hash = awful.util.pread("sleep 1; scrot ~/screenshots/%Y%m%d%s_scrot_$wx$h.png -sb -e 'curl \"i.givemeyour.pw/upload\" -H \"token: Some Lovingly Long Auth Token String To Prevent Stuff\" -F image=@$f'")
+    os.execute("echo \"http://i.givemeyour.pw/" .. hash .. "\" | tr -d '\\n' | xclip ")
+    naughty.notify({title="Thing!", text="Took a screen shot(".. hash ..") and uploaded probably"})
+end
+
+
 screenshotMenu = {
     { "take screenshot", scrot_cmd(" -e 'xdg-open $f'") },
-    { "capture area", scrot_cmd(" -s -e 'feh $f'") },
-    { "Puush area", scrot_cmd(" -s -e '(puush $f; feh `xclip -o -selection c`) &'") }
+    { "capture area", scrot_cmd(" -s -e 'xdg-open $f'") },
+    { "Puush area", uptopw_cmd }
 }
 
 mymainmenu = awful.menu({ items = { { "awesome", awesomeMenu, beautiful.awesome_icon },
@@ -136,7 +143,6 @@ mytextclock = awful.widget.textclock()
 
 -- Create a wibox for each screen and add it
 mywibox = {}
-mypromptbox = {}
 mylayoutbox = {}
 mytaglist = {}
 mytaglist.buttons = awful.util.table.join(
@@ -185,8 +191,6 @@ mytasklist.buttons = awful.util.table.join(
                                           end))
 
 for s = 1, screen.count() do
-    -- Create a promptbox for each screen
-    mypromptbox[s] = awful.widget.prompt()
     -- Create an imagebox widget which will contains an icon indicating which layout we're using.
     -- We need one layoutbox per screen.
     mylayoutbox[s] = awful.widget.layoutbox(s)
@@ -208,7 +212,6 @@ for s = 1, screen.count() do
     local left_layout = wibox.layout.fixed.horizontal()
     left_layout:add(mylauncher)
     left_layout:add(mytaglist[s])
-    left_layout:add(mypromptbox[s])
 
     -- Widgets that are aligned to the right
     local right_layout = wibox.layout.fixed.horizontal()
@@ -228,7 +231,7 @@ end
 
 -- {{{ Mouse bindings
 root.buttons(awful.util.table.join(
-    awful.button({ }, 3, function () mymainmenu:toggle() end),
+    awful.button({ }, 1, function () mymainmenu:toggle() end),
     awful.button({ }, 4, awful.tag.viewnext),
     awful.button({ }, 5, awful.tag.viewprev)
 ))
@@ -257,7 +260,9 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey, "Shift"   }, "k", function () awful.client.swap.byidx( -1)    end),
     awful.key({ modkey, "Control" }, "j", function () awful.screen.focus_relative( 1) end),
     awful.key({ modkey, "Control" }, "k", function () awful.screen.focus_relative(-1) end),
-    awful.key({ modkey,           }, "u", awful.client.urgent.jumpto),
+    awful.key({ modkey,           }, "p", uptopw_cmd ),
+    awful.key({ modkey,           }, "u", scrot_cmd(" -s -e 'xdg-open $f'") ),
+    -- awful.key({ modkey,           }, "u", awful.client.urgent.jumpto),
     awful.key({ modkey,           }, "Tab",
         function ()
             awful.client.focus.history.previous()
@@ -277,44 +282,16 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey, "Shift"   }, "l",     function () awful.tag.incnmaster(-1)      end),
     awful.key({ modkey, "Control" }, "h",     function () awful.tag.incncol( 1)         end),
     awful.key({ modkey, "Control" }, "l",     function () awful.tag.incncol(-1)         end),
-    awful.key({ modkey,           }, "space", function () awful.layout.inc(layouts,  1) end),
-    awful.key({ modkey, "Shift"   }, "space", function () awful.layout.inc(layouts, -1) end),
+    awful.key({ modkey, "Control" }, "n", awful.client.restore)
 
-    awful.key({ modkey, "Control" }, "n", awful.client.restore),
-
-    -- Prompt
-    awful.key({ modkey },            "r",     function () mypromptbox[mouse.screen]:run() end),
-
-    awful.key({ modkey }, "x",
-              function ()
-                  awful.prompt.run({ prompt = "Run Lua code: " },
-                  mypromptbox[mouse.screen].widget,
-                  awful.util.eval, nil,
-                  awful.util.getdir("cache") .. "/history_eval")
-              end),
-    -- Menubar
-    awful.key({ modkey }, "p", function() menubar.show() end)
 )
 
 clientkeys = awful.util.table.join(
-    awful.key({ modkey,           }, "f",      function (c) c.fullscreen = not c.fullscreen  end),
     awful.key({ modkey, "Shift"   }, "c",      function (c) c:kill()                         end),
     awful.key({ modkey, "Control" }, "space",  awful.client.floating.toggle                     ),
     awful.key({ modkey, "Control" }, "Return", function (c) c:swap(awful.client.getmaster()) end),
-    awful.key({ modkey,           }, "o",      awful.client.movetoscreen                        ),
-    awful.key({ modkey,           }, "t",      function (c) c.ontop = not c.ontop            end),
-    awful.key({ modkey,           }, "n",
-        function (c)
-            -- The client currently has the input focus, so it cannot be
-            -- minimized, since minimized clients can't have the focus.
-            c.minimized = true
-        end),
-    awful.key({ modkey,           }, "m",
-        function (c)
-            c.maximized_horizontal = not c.maximized_horizontal
-            c.maximized_vertical   = not c.maximized_vertical
-        end)
-)
+    awful.key({ modkey,           }, "t",      function (c) c.ontop = not c.ontop            end)
+    )
 
 -- Bind all key numbers to tags.
 -- Be careful: we use keycodes to make it works on any keyboard layout.
@@ -364,7 +341,8 @@ end
 clientbuttons = awful.util.table.join(
     awful.button({ }, 1, function (c) client.focus = c; c:raise() end),
     awful.button({ modkey }, 1, awful.mouse.client.move),
-    awful.button({ modkey }, 3, awful.mouse.client.resize))
+    awful.button({ modkey }, 3, awful.mouse.client.resize)
+    )
 
 -- Set keys
 root.keys(globalkeys)
@@ -397,23 +375,17 @@ awful.rules.rules = {
     -- { rule = { class = "Firefox" },
     --   properties = { tag = tags[1][2] } },
 }
--- }}}
-    -- Set Firefox to always map on tags number 2 of screen 1.
-    -- { rule = { class = "Firefox" },
-    --   properties = { tag = tags[1][2] } },
-
--- }}}
 
 -- {{{ Signals
 -- Signal function to execute when a new client appears.
 client.connect_signal("manage", function (c, startup)
     -- Enable sloppy focus
-    c:connect_signal("mouse::enter", function(c)
-        if awful.layout.get(c.screen) ~= awful.layout.suit.magnifier
-            and awful.client.focus.filter(c) then
-            client.focus = c
-        end
-    end)
+    --c:connect_signal("mouse::enter", function(c)
+        --if awful.layout.get(c.screen) ~= awful.layout.suit.magnifier
+            --and awful.client.focus.filter(c) then
+            --client.focus = c
+        --end
+    --end)
 
     if not startup then
         -- Set the windows at the slave,

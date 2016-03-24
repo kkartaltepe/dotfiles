@@ -1,2 +1,2 @@
-player=mpv --cache 2048
+player=mpv --autosync=30 --cache=1024
 player-no-close

@@ -18,8 +18,11 @@ fi
 # Use systemd unit for now.
 #[[ ! -s ~/.config/mpd/pid ]] && mpd
 
-compton -b --config ~/.compton.conf
+# Compton is buggy as a muther
+#compton -b --config ~/.compton.conf
 ~/.random_wallpaper.sh &
+
+synergys
 
 if [ $WM == openbox ]; then
     # configure obmenu user
@@ -28,6 +31,7 @@ if [ $WM == openbox ]; then
 
     /usr/bin/openbox-session > ~/.openbox_startup.log 2>&1
 elif [ $WM == awesome ]; then
+    ibus-daemon -xdr
     awesome --no-argb
 fi
 

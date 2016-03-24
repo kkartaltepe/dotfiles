@@ -138,8 +138,10 @@ set mouse=a
 " "press <Enter> to continue"
 set cmdheight=2
 
-" Display line numbers on the left
+" Display relative line numbers on the left
 set relativenumber
+" Display the absolute line number on current line
+set number
 
 " set show matching parens
 set showmatch

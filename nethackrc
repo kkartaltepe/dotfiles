@@ -1,0 +1,5 @@
+OPTIONS=name:Kurt
+OPTIONS=showexp,time,pettype:cat
+OPTIONS=boulder:0,color
+OPTIONS=pickup_types:$?!/",packorder:"?=!%)[/+(*`0_
+
